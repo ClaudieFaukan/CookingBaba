@@ -3,10 +3,18 @@
 namespace App\Entity;
 
 use App\Repository\RecipeRepository;
+use App\Validator\BanWord;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\Regex;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
+#[UniqueEntity('title')]
+#[UniqueEntity('slug')]
 class Recipe
 {
     #[ORM\Id]
@@ -15,12 +23,18 @@ class Recipe
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Length(min: 5, max: 255)]
+    #[NotBlank(message: 'Le titre ne peut pas être vide.')]
+    #[BanWord()]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Length(min: 5, max: 255)]
+    #[Regex(pattern: '/^[a-z0-9]+(?:-[a-z0-9]+)*$/', message: 'Le slug ne peut contenir que des lettres minuscules, des chiffres et des tirets.')]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Length(min: 30)]
     private ?string $content = null;
 
     #[ORM\Column]
@@ -30,6 +44,7 @@ class Recipe
     private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\Column(nullable: true)]
+    #[Positive(message: 'La durée doit être un nombre positif.')]
     private ?int $duration = null;
 
     public function getId(): ?int
