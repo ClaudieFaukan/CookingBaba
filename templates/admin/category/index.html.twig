@@ -1,0 +1,40 @@
+{% extends 'admin/admin.html.twig' %}
+
+{% block title %}Catégories{% endblock %}
+
+{% block body %}
+    <h1>Catégories</h1>
+
+<button class="btn btn-success mb-3">
+    <a href="{{ path('admin.category.create') }}" class="text-white text-decoration-none">Créer une nouvelle catégorie</a>
+</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for category in categories %}
+            <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category.name }}</td>
+                <td>
+                    <a href="{{ path('admin.category.edit', {'id': category.id}) }}" class="btn btn-primary btn-sm">Éditer</a>
+                     <form action="{{ path('admin.category.delete', {'id': category.id}) }}" method="post" style="display:inline;">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                        <button class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Aucune catégorie trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -21,6 +21,12 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class RecipeType extends AbstractType
 {
+
+    public function __construct(private FormListenerFactory $formListenerFactory)
+    {
+        
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -34,38 +40,11 @@ class RecipeType extends AbstractType
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer les modifications'
             ])
-            ->addEventListener(FormEvents::PRE_SUBMIT, $this->autoSlug(...))
-            ->addEventListener(FormEvents::POST_SUBMIT,$this->attachTimeStamps(...))
+            ->addEventListener(FormEvents::PRE_SUBMIT, $this->formListenerFactory->autoSlug('title'))
+            ->addEventListener(FormEvents::POST_SUBMIT,$this->formListenerFactory->timestamps())
         ;
     }
 
-    public function attachTimeStamps(PostSubmitEvent $event): void
-    {
-        $now = new \DateTimeImmutable();
-        $data = $event->getData();
-
-        if( !$data instanceof Recipe) {
-            return;
-        }
-
-        if ($data->getCreatedAt() === null) {
-            $data->setCreatedAt($now);
-        }
-
-        $data->setUpdatedAt($now);
-    }
-
-    public function autoSlug(PreSubmitEvent $event): void
-    {
-        $data = $event->getData();
-   
-        if (!empty($data['title']) && empty($data['slug'])) {
-
-            $slugger = new AsciiSlugger();
-            $data['slug'] = $slugger->slug($data['title'])->lower();
-            $event->setData($data);
-        }
-    }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
