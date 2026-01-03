@@ -22,6 +22,8 @@ class RecipeRepository extends ServiceEntityRepository
     public function findByDurationLowerThan(int $duration): array
     {
         return $this->createQueryBuilder('r')
+            ->select('r', 'c')
+            ->leftJoin('r.category', 'c')
             ->andWhere('r.duration <= :duration')
             ->setParameter('duration', $duration)
             ->orderBy('r.id', 'ASC')
@@ -30,7 +32,7 @@ class RecipeRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    
+
     public function findTotalDuration(): int
     {
         return (int) $this->createQueryBuilder('r')
@@ -38,5 +40,4 @@ class RecipeRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-
 }
