@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Requirement\Requirement;
 
 #[Route('/admin/recettes', name: 'admin.recipe.')]
@@ -19,7 +20,7 @@ final class RecipeController extends AbstractController
     public function index(Request $request, RecipeRepository $recipeRepository): Response
     {
         $recipes = $recipeRepository->findByDurationLowerThan(30);
-        
+
         return $this->render('admin/recipe/index.html.twig', [
             'recipes' => $recipes
         ]);
@@ -36,6 +37,7 @@ final class RecipeController extends AbstractController
 
             $em->persist($recipe);
             $em->flush();
+
             $this->addFlash('success', 'La recette a bien été créée.');
             return $this->redirectToRoute('admin.recipe.index');
         }

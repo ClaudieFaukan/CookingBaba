@@ -3,5 +3,6 @@
 {% block title %}Modifier{% endblock %}
 
 {% block body %}
+<img src="{{ vich_uploader_asset(recipe, 'thumbnailFile') }}" alt="Photo de {{ recipe.title }}">
 {{ form(form) }}
 {% endblock %}

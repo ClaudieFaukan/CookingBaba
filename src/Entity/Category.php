@@ -43,7 +43,7 @@ class Category
     /**
      * @var Collection<int, Recipe>
      */
-    #[ORM\OneToMany(targetEntity: Recipe::class, mappedBy: 'category',cascade: ['set null'])]
+    #[ORM\OneToMany(targetEntity: Recipe::class, mappedBy: 'category',cascade: ['detach'])]
     private Collection $recipes;
 
     public function __construct()
