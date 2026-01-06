@@ -15,17 +15,19 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/recettes', name: 'admin.recipe.')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_USER')]
 final class RecipeController extends AbstractController
 {
     #[Route(name: 'index')]
     public function index(Request $request, RecipeRepository $recipeRepository): Response
     {
     
-        $recipes = $recipeRepository->findByDurationLowerThan(30);
+        $page = $request->query->getInt('page', 1);
+
+        $recipes = $recipeRepository->paginate(page: $page);
 
         return $this->render('admin/recipe/index.html.twig', [
-            'recipes' => $recipes
+            'recipes' => $recipes,
         ]);
     }
 

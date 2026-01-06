@@ -11,26 +11,28 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Title</th>
-					<th>Catégorie</th>
+					<th>{{ knp_pagination_sortable(recipes, 'Titre', 'r.title') }}</th>
+					<th>{{ knp_pagination_sortable(recipes, 'Catégorie', 'c.name') }}</th>
 					<th>Description</th>
+					<th>{{ knp_pagination_sortable(recipes, 'Durée', 'r.duration') }}</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for recipe in recipes %}
 					<tr>
-						<td>{{ recipe.id }}</td>
+
 						<td>{{ recipe.title }}</td>
 						<td>
-                        {% if recipe.category %}
-							<a href="{{ path('admin.category.edit', {'id': recipe.category.id}) }}">{{ recipe.category.name |default('') }}</a>
-                        {% else %}
-                            <em>Aucune catégorie</em>
-                        {% endif %}
+							{% if recipe.category %}
+								<a href="{{ path('admin.category.edit', {'id': recipe.category.id}) }}">{{ recipe.category.name |default('') }}</a>
+							{% else %}
+								<em>Aucune catégorie</em>
+							{% endif %}
 						</td>
 						<td>{{ recipe.content|length > 100 ? recipe.content|slice(0, 100) ~ '...' : recipe.content }}</td>
+						<td>{{ recipe.duration }}
+							min</td>
 						<td>
 							<a href="{{ path('admin.recipe.edit', {'id': recipe.id}) }}" class="btn btn-primary btn-sm">Éditer</a>
 							<form action="{{ path('admin.recipe.delete', {'id': recipe.id}) }}" method="post" style="display:inline;">
@@ -39,6 +41,7 @@
 								<button class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette recette ?');">Supprimer</button>
 							</form>
 						</td>
+
 					</tr>
 				{% else %}
 					<tr>
@@ -48,4 +51,7 @@
 			</tbody>
 		</table>
 
-	{% endblock %}
+	</ul>
+
+	{{ knp_pagination_render(recipes) }}
+{% endblock %}
