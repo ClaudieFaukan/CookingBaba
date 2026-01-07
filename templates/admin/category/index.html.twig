@@ -13,6 +13,7 @@
             <tr>
                 <th>ID</th>
                 <th>Nom</th>
+                <th>Recettes</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -21,6 +22,7 @@
             <tr>
                 <td>{{ category.id }}</td>
                 <td>{{ category.name }}</td>
+                <td>{{ category.count }}</td>
                 <td>
                     <a href="{{ path('admin.category.edit', {'id': category.id}) }}" class="btn btn-primary btn-sm">Éditer</a>
                      <form action="{{ path('admin.category.delete', {'id': category.id}) }}" method="post" style="display:inline;">

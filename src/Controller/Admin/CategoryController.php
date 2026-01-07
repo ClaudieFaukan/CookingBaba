@@ -14,16 +14,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/admin/category', name: 'admin.category.')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_USER')]
 final class CategoryController extends AbstractController
 {
     #[Route(name: 'index')]
     public function index(Request $request, CategoryRepository $categoryRepository): Response
     {
-        $categories = $categoryRepository->findAll();
 
         return $this->render('admin/category/index.html.twig',[
-            'categories' => $categories,
+            'categories' => $categoryRepository->findAllWithCount(),
         ]);
     }
 
