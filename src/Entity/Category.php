@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -28,6 +29,7 @@ class Category
         minMessage: 'Name must be at least {{ limit }} characters long.',
         maxMessage: 'Name cannot be longer than {{ limit }} characters.'
     )]
+    #[Groups(['recipes.show'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
@@ -43,7 +45,7 @@ class Category
     /**
      * @var Collection<int, Recipe>
      */
-    #[ORM\OneToMany(targetEntity: Recipe::class, mappedBy: 'category',cascade: ['detach'])]
+    #[ORM\OneToMany(targetEntity: Recipe::class, mappedBy: 'category', cascade: ['detach'])]
     private Collection $recipes;
 
     public function __construct()

@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Positive;
 use Vich\UploaderBundle\Mapping\Attribute\UploadableField;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Attribute\Uploadable;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
@@ -24,21 +25,25 @@ class Recipe
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['recipes.index'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Length(min: 5, max: 255)]
     #[NotBlank(message: 'Le titre ne peut pas être vide.')]
     #[BanWord()]
+    #[Groups(['recipes.index'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     #[Length(min: 5, max: 255)]
     #[Regex(pattern: '/^[a-z0-9]+(?:-[a-z0-9]+)*$/', message: 'Le slug ne peut contenir que des lettres minuscules, des chiffres et des tirets.')]
+    #[Groups(['recipes.index'])]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Length(min: 30)]
+    #[Groups(['recipes.show'])]
     private ?string $content = null;
 
     #[ORM\Column]
@@ -49,9 +54,11 @@ class Recipe
 
     #[ORM\Column(nullable: true)]
     #[Positive(message: 'La durée doit être un nombre positif.')]
+    #[Groups(['recipes.index'])]
     private ?int $duration = null;
 
     #[ORM\ManyToOne(inversedBy: 'recipes',cascade: ['persist'])]
+     #[Groups(['recipes.show'])]
     private ?Category $category = null;
 
     #[ORM\Column(length: 255, nullable: true)]
