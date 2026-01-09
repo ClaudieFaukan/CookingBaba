@@ -32,18 +32,18 @@ class Recipe
     #[Length(min: 5, max: 255)]
     #[NotBlank(message: 'Le titre ne peut pas être vide.')]
     #[BanWord()]
-    #[Groups(['recipes.index'])]
+    #[Groups(['recipes.index', 'recipes.create'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     #[Length(min: 5, max: 255)]
     #[Regex(pattern: '/^[a-z0-9]+(?:-[a-z0-9]+)*$/', message: 'Le slug ne peut contenir que des lettres minuscules, des chiffres et des tirets.')]
-    #[Groups(['recipes.index'])]
+    #[Groups(['recipes.index', 'recipes.create'])]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Length(min: 30)]
-    #[Groups(['recipes.show'])]
+    #[Groups(['recipes.show', 'recipes.create'])]
     private ?string $content = null;
 
     #[ORM\Column]
@@ -54,7 +54,7 @@ class Recipe
 
     #[ORM\Column(nullable: true)]
     #[Positive(message: 'La durée doit être un nombre positif.')]
-    #[Groups(['recipes.index'])]
+    #[Groups(['recipes.index', 'recipes.create'])]
     private ?int $duration = null;
 
     #[ORM\ManyToOne(inversedBy: 'recipes',cascade: ['persist'])]
