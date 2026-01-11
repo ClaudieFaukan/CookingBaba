@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Recipe;
 use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
+use App\Security\Voter\RecipeVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,10 +16,11 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/recettes', name: 'admin.recipe.')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_USER')]
 final class RecipeController extends AbstractController
 {
     #[Route(name: 'index')]
+    #[IsGranted(RecipeVoter::LIST)]
     public function index(Request $request, RecipeRepository $recipeRepository): Response
     {
     
@@ -32,6 +34,7 @@ final class RecipeController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
+    #[IsGranted(RecipeVoter::CREATE)]
     public function create(Request $request, EntityManagerInterface $em): Response
     {
         $recipe = new Recipe();
@@ -54,6 +57,7 @@ final class RecipeController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
+    #[IsGranted(RecipeVoter::EDIT, subject: 'recipe')]
     public function edit(Request $request, Recipe $recipe, EntityManagerInterface $em): Response
     {
 
@@ -77,6 +81,7 @@ final class RecipeController extends AbstractController
 
 
     #[Route('/{id}/delete', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
+    #[IsGranted(RecipeVoter::DELETE, subject: 'recipe')]
     public function remove(Recipe $recipe, EntityManagerInterface $em): Response
     {
         $em->remove($recipe);
