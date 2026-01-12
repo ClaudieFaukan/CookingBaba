@@ -37,10 +37,7 @@ class RecipeType extends AbstractType
     {
         $builder
             ->add('title',TextType::class,['empty_data' => ''])
-            ->add('category',EntityType::class,[
-                'class' => Category::class,
-                'choice_label' => 'name',
-            ])
+            ->add('category',CategoryAutocompleteField::class)
             ->add('thumbnailFile',FileType::class)
             ->add('content',TextareaType::class,['empty_data' => ''])
             ->add('slug', TextType::class, [
