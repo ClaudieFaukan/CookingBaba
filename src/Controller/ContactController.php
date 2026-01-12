@@ -4,19 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Contact;
 use App\Form\ContactType;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class ContactController extends AbstractController
 {
     #[Route('/contact', name: 'contact.index', methods: ['GET', 'POST'])]
-    public function index(Request $request, MailerInterface $mailer, EntityManagerInterface $em): Response
+    public function index(Request $request, EventDispatcherInterface $eventDispatcher): Response
     {
         $contact = new Contact();
         $form = $this->createForm(ContactType::class, $contact);
@@ -26,15 +23,8 @@ final class ContactController extends AbstractController
             $data = $form->getData();
 
             try {
-                $email = (new TemplatedEmail())
-                    ->from($data->getEmail())
-                    ->to($data->getService())
-                    ->subject($data->getSubject())
-                    ->htmlTemplate('emails/contact.html.twig')->context(['data' => $data]);
 
-                $mailer->send($email);
-                $em->persist($data);
-                $em->flush();
+            $eventDispatcher->dispatch(new \App\Event\ContactRequestEvent($data));
 
             } catch (\Exception $e) {
                 $this->addFlash('error', 'An error occurred while sending your message. Please try again later.');
